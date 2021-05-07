@@ -1,0 +1,955 @@
+{
+    "v": [
+        {
+            "name": "version",
+            "reg": "(\\d*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "o": [
+        {
+            "name": "origin",
+            "reg": "(\\S*) (\\d*) (\\d*) (\\S*) IP(\\d) (\\S*)",
+            "format": "${item.username} ${item.sessionId} ${item.sessionVersion} ${item.netType} IP${item.ipVer} ${item.address}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "username"
+                },
+                {
+                    "type": "Long",
+                    "name": "sessionId"
+                },
+                {
+                    "type": "Long",
+                    "name": "sessionVersion"
+                },
+                {
+                    "type": "String",
+                    "name": "netType"
+                },
+                {
+                    "type": "Long",
+                    "name": "ipVer"
+                },
+                {
+                    "type": "String",
+                    "name": "address"
+                }
+            ]
+        }
+    ],
+    "s": [
+        {
+            "name": "name",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "i": [
+        {
+            "name": "description",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "u": [
+        {
+            "name": "uri",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "e": [
+        {
+            "name": "email",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "p": [
+        {
+            "name": "phone",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "z": [
+        {
+            "name": "timezones",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "r": [
+        {
+            "name": "repeats",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ],
+    "t": [
+        {
+            "name": "timing",
+            "reg": "(\\d*) (\\d*)",
+            "format": "${item.start} ${item.stop}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "start"
+                },
+                {
+                    "type": "Long",
+                    "name": "stop"
+                }
+            ]
+        }
+    ],
+    "c": [
+        {
+            "name": "connection",
+            "reg": "IN IP(\\d) (\\S*)",
+            "format": "IN IP${item.version} ${item.ip}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "version"
+                },
+                {
+                    "type": "String",
+                    "name": "ip"
+                }
+            ]
+        }
+    ],
+    "b": [
+        {
+            "push": "bandwidth",
+            "reg": "(TIAS|AS|CT|RR|RS):(\\d*)",
+            "format": "${item.type}:${item.limit}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "type"
+                },
+                {
+                    "type": "String",
+                    "name": "limit"
+                }
+            ]
+        }
+    ],
+    "m": [
+        {
+            "reg": "(\\w*) (\\d*) ([\\w/]*)(?: (.*))?",
+            "format": "${item.type} ${item.port} ${item.protocol} ${item.payloads}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "type"
+                },
+                {
+                    "type": "Long",
+                    "name": "port"
+                },
+                {
+                    "type": "String",
+                    "name": "protocol"
+                },
+                {
+                    "type": "String",
+                    "name": "payloads"
+                }
+            ]
+        }
+    ],
+    "a": [
+        {
+            "push": "rtp",
+            "reg": "rtpmap:(\\d*) ([\\w\\-.]*)(?:\\s*/(\\d*)(?:\\s*/(\\S*))?)?",
+            "format": "rtpmap:${item.payload} ${item.codec}${if (item.rate != null) (\"/\" + item.rate) else \"\"}${if (item.encoding != null) (\"/\" + item.encoding) else \"\"}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "payload"
+                },
+                {
+                    "type": "String",
+                    "name": "codec"
+                },
+                {
+                    "type": "Long",
+                    "name": "rate",
+                    "optional": true
+                },
+                {
+                    "type": "String",
+                    "name": "encoding",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "push": "fmtp",
+            "reg": "fmtp:(\\d*) ([\\S| ]*)",
+            "format": "fmtp:${item.payload} ${item.config}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "payload"
+                },
+                {
+                    "type": "String",
+                    "name": "config"
+                }
+            ]
+        },
+        {
+            "name": "control",
+            "reg": "control:(.*)",
+            "format": "control:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "rtcp",
+            "reg": "rtcp:(\\d*)(?: (\\S*) IP(\\d) (\\S*))?",
+            "format": "rtcp:${item.port}${if (item.netType != null) (\" \" + item.netType) else \"\"}${if (item.ipVer != null) (\" IP\" + item.ipVer) else \"\"}${if (item.address != null) (\" \" + item.address) else \"\"}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "port"
+                },
+                {
+                    "type": "String",
+                    "name": "netType",
+                    "optional": true
+                },
+                {
+                    "type": "Long",
+                    "name": "ipVer",
+                    "optional": true
+                },
+                {
+                    "type": "String",
+                    "name": "address",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "push": "rtcpFbTrrInt",
+            "reg": "rtcp-fb:(\\*|\\d*) trr-int (\\d*)",
+            "format": "rtcp-fb:${item.payload} trr-int ${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "payload"
+                },
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "push": "rtcpFb",
+            "reg": "rtcp-fb:(\\*|\\d*) ([\\w-_]*)(?: ([\\w-_]*))?",
+            "format": "rtcp-fb:${item.payload} ${item.type}${if (item.subtype != null) (\" \" + item.subtype) else \"\"}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "payload"
+                },
+                {
+                    "type": "String",
+                    "name": "type"
+                },
+                {
+                    "type": "String",
+                    "name": "subtype",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "push": "ext",
+            "reg": "extmap:(\\d+)(?:/(\\w+))?(?: (urn:ietf:params:rtp-hdrext:encrypt))? (\\S*)(?: (\\S*))?",
+            "format": "extmap:${item.value}${if (item.direction != null) (\"/\" + item.direction) else \"\"}${if (item.encryptUri != null) (\" \" + item.encryptUri) else \"\"} ${item.uri}${if (item.config != null) (\" \" + item.config) else \"\"}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                },
+                {
+                    "type": "String",
+                    "name": "direction",
+                    "optional": true
+                },
+                {
+                    "type": "String",
+                    "name": "encryptUri",
+                    "optional": true
+                },
+                {
+                    "type": "String",
+                    "name": "uri"
+                },
+                {
+                    "type": "String",
+                    "name": "config",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "name": "extmapAllowMixed",
+            "reg": "(extmap-allow-mixed)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "push": "crypto",
+            "reg": "crypto:(\\d*) ([\\w_]*) (\\S*)(?: (\\S*))?",
+            "format": "crypto:${item.id} ${item.suite} ${item.config}${if (item.sessionConfig!=null) (\" \" + item.sessionConfig) else \"\"}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "id"
+                },
+                {
+                    "type": "String",
+                    "name": "suite"
+                },
+                {
+                    "type": "String",
+                    "name": "config"
+                },
+                {
+                    "type": "String",
+                    "name": "sessionConfig",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "name": "setup",
+            "reg": "setup:(\\w*)",
+            "format": "setup:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "connectionType",
+            "reg": "connection:(new|existing)",
+            "format": "connection:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "mid",
+            "reg": "mid:([^\\s]*)",
+            "format": "mid:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "msid",
+            "reg": "msid:(.*)",
+            "format": "msid:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "ptime",
+            "reg": "ptime:(\\d*(?:\\.\\d*)*)",
+            "format": "ptime:${item.value}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "maxptime",
+            "reg": "maxptime:(\\d*(?:\\.\\d*)*)",
+            "format": "maxptime:${item.value}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "direction",
+            "reg": "(sendrecv|recvonly|sendonly|inactive)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "icelite",
+            "reg": "(ice-lite)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "iceUfrag",
+            "reg": "ice-ufrag:(\\S*)",
+            "format": "ice-ufrag:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "icePwd",
+            "reg": "ice-pwd:(\\S*)",
+            "format": "ice-pwd:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "fingerprint",
+            "reg": "fingerprint:(\\S*) (\\S*)",
+            "format": "fingerprint:${item.type} ${item.hash}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "type"
+                },
+                {
+                    "type": "String",
+                    "name": "hash"
+                }
+            ]
+        },
+        {
+            "push": "candidates",
+            "reg": "candidate:(\\S*) (\\d*) (\\S*) (\\d*) (\\S*) (\\d*) typ (\\S*)(?: raddr (\\S*) rport (\\d*))?(?: tcptype (\\S*))?(?: generation (\\d*))?(?: network-id (\\d*))?(?: network-cost (\\d*))?",
+            "format": "candidate:${item.foundation} ${item.component} ${item.transport} ${item.priority} ${item.ip} ${item.port} typ ${item.type}${if (item.raddr!=null&&item.rport!=null) (\" raddr \" + item.raddr + \" rport \" + item.rport) else \"\" }${if (item.tcptype!=null) (\" tcptype \" + item.tcptype) else \"\" }${if (item.generation!=null) (\" generation \" + item.generation) else \"\" }${if (item.networkId!=null) (\" network-id \" + item.networkId) else \"\" }${if (item.networkCost!=null) (\" network-cost \" + item.networkCost) else \"\" }",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "foundation"
+                },
+                {
+                    "type": "Long",
+                    "name": "component"
+                },
+                {
+                    "type": "String",
+                    "name": "transport"
+                },
+                {
+                    "type": "Long",
+                    "name": "priority"
+                },
+                {
+                    "type": "String",
+                    "name": "ip"
+                },
+                {
+                    "type": "Long",
+                    "name": "port"
+                },
+                {
+                    "type": "String",
+                    "name": "type"
+                },
+                {
+                    "type": "String",
+                    "name": "raddr",
+                    "optional": true
+                },
+                {
+                    "type": "Long",
+                    "name": "rport",
+                    "optional": true
+                },
+                {
+                    "type": "String",
+                    "name": "tcptype",
+                    "optional": true
+                },
+                {
+                    "type": "Long",
+                    "name": "generation",
+                    "optional": true
+                },
+                {
+                    "type": "Long",
+                    "name": "networkId",
+                    "optional": true
+                },
+                {
+                    "type": "Long",
+                    "name": "networkCost",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "name": "endOfCandidates",
+            "reg": "(end-of-candidates)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "remoteCandidates",
+            "reg": "remote-candidates:(.*)",
+            "format": "remote-candidates:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "iceOptions",
+            "reg": "ice-options:(\\S*)",
+            "format": "ice-options:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "push": "ssrcs",
+            "reg": "ssrc:(\\d*) ([\\w_-]*)(?::(.*))?",
+            "format": "ssrc:${item.id}${if (item.attribute!=null) (\" \" + item.attribute + (if (item.value!=null) \":\" + item.value else \"\" )) else \"\"}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "id"
+                },
+                {
+                    "type": "String",
+                    "name": "attribute",
+                    "optional": true
+                },
+                {
+                    "type": "String",
+                    "name": "value",
+                    "optional": true
+                }
+            ]
+        },
+        {
+            "push": "ssrcGroups",
+            "reg": "ssrc-group:([\\x21\\x23\\x24\\x25\\x26\\x27\\x2A\\x2B\\x2D\\x2E\\w]*) (.*)",
+            "format": "ssrc-group:${item.semantics} ${item.ssrcs}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "semantics"
+                },
+                {
+                    "type": "String",
+                    "name": "ssrcs"
+                }
+            ]
+        },
+        {
+            "name": "msidSemantic",
+            "reg": "msid-semantic:\\s?(\\w*) (\\S*)",
+            "format": "msid-semantic: ${item.semantic} ${item.token}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "semantic"
+                },
+                {
+                    "type": "String",
+                    "name": "token"
+                }
+            ]
+        },
+        {
+            "push": "groups",
+            "reg": "group:(\\w*) (.*)",
+            "format": "group:${item.type} ${item.mids}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "type"
+                },
+                {
+                    "type": "String",
+                    "name": "mids"
+                }
+            ]
+        },
+        {
+            "name": "rtcpMux",
+            "reg": "(rtcp-mux)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "rtcpRsize",
+            "reg": "(rtcp-rsize)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "sctpmap",
+            "reg": "sctpmap:([\\w_/]*) (\\S*)(?: (\\S*))?",
+            "format": "sctpmap:${item.sctpmapNumber}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "sctpmapNumber"
+                }
+            ]
+        },
+        {
+            "name": "xGoogleFlag",
+            "reg": "x-google-flag:([^\\s]*)",
+            "format": "x-google-flag:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "push": "rids",
+            "reg": "rid:([\\d\\w]+) (\\w+)(?: ([\\S| ]*))?",
+            "format": "rid:${item.id}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "id"
+                }
+            ]
+        },
+        {
+            "push": "imageattrs",
+            "reg": "imageattr:(\\d+|\\*)[\\s\\t]+(send|recv)[\\s\\t]+(\\*|[\\S+](?:[\\s\\t]+[\\S+])*)(?:[\\s\\t]+(recv|send)[\\s\\t]+(\\*|[\\S+](?:[\\s\\t]+[\\S+])*))?",
+            "format": "imageattr:${item.pt}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "pt"
+                }
+            ]
+        },
+        {
+            "name": "simulcast",
+            "reg": "simulcast:(send|recv) ([a-zA-Z0-9\\-_~;,]+)(?:\\s?(send|recv) ([a-zA-Z0-9\\-_~;,]+))?$",
+            "format": "simulcast:${item.dir1}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "dir1"
+                }
+            ]
+        },
+        {
+            "name": "simulcast03",
+            "reg": "simulcast:[\\s\\t]+([\\S+\\s\\t]+)$",
+            "format": "simulcast:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "framerate",
+            "reg": "framerate:(\\d+(?:$|\\.\\d+))",
+            "format": "framerate:${item.value}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "sourceFilter",
+            "reg": "source-filter: *(excl|incl) (\\S*) (IP4|IP6|\\*) (\\S*) (.*)",
+            "format": "source-filter: ${item.filterMode} ${item.netType} ${item.addressTypes} ${item.destAddress} ${item.srcList}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "filterMode"
+                },
+                {
+                    "type": "String",
+                    "name": "netType"
+                },
+                {
+                    "type": "String",
+                    "name": "addressTypes"
+                },
+                {
+                    "type": "String",
+                    "name": "destAddress"
+                },
+                {
+                    "type": "String",
+                    "name": "srcList"
+                }
+            ]
+        },
+        {
+            "name": "bundleOnly",
+            "reg": "(bundle-only)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "label",
+            "reg": "label:(.+)",
+            "format": "label:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "sctpPort",
+            "reg": "sctp-port:(\\d+)$",
+            "format": "sctp-port:${item.value}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "maxMessageSize",
+            "reg": "max-message-size:(\\d+)$",
+            "format": "max-message-size:${item.value}",
+            "fields": [
+                {
+                    "type": "Long",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "push": "tsRefClocks",
+            "reg": "ts-refclk:([^\\s=]*)(?:=(\\S*))?",
+            "format": "ts-refclk:${item.clksrc}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "clksrc"
+                }
+            ]
+        },
+        {
+            "name": "mediaClk",
+            "reg": "mediaclk:(?:id=(\\S*))? *([^\\s=]*)(?:=(\\S*))?(?: *rate=(\\d+)/(\\d+))?",
+            "format": "mediaclk:${item.id}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "id"
+                }
+            ]
+        },
+        {
+            "name": "keywords",
+            "reg": "keywds:(.+)$",
+            "format": "keywds:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "content",
+            "reg": "content:(.+)",
+            "format": "content:${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "bfcpFloorCtrl",
+            "reg": "floorctrl:(c-only|s-only|c-s)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "bfcpConfId",
+            "reg": "confid:(\\d+)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "bfcpUserId",
+            "reg": "userid:(\\d+)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        },
+        {
+            "name": "bfcpFloorId",
+            "reg": "floorid:(.+) (?:m-stream|mstrm):(.+)",
+            "format": "floorid:${item.id} mstrm:${item.mStream}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "id"
+                },
+                {
+                    "type": "String",
+                    "name": "mStream"
+                }
+            ]
+        },
+        {
+            "push": "invalid",
+            "reg": "(.*)",
+            "format": "${item.value}",
+            "fields": [
+                {
+                    "type": "String",
+                    "name": "value"
+                }
+            ]
+        }
+    ]
+}

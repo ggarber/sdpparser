@@ -1,0 +1,168 @@
+@file:Suppress("RemoveSingleExpressionStringTemplate", "SpellCheckingInspection")
+
+package com.ggarber.sdpparser
+
+{% for type, rules in grammar.items() -%}
+{% for rule in rules -%}
+{% set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) -%}
+data class Sdp{{name.title()}}({% for field in rule.fields %}val {{field.name}}: {{field.type}}{{"?" if field.optional else ""}}{{ ", " if not loop.last else "" }}{% endfor %})
+{% endfor %}
+{%- endfor %}
+
+fun toOptionalLong(str: String): Long? = if (str.isEmpty()) null else str.toLong()
+fun toOptionalString(str: String): String? = str.ifEmpty { null }
+
+operator fun MatchResult.Destructured.component11(): String = match.groupValues[11]
+operator fun MatchResult.Destructured.component12(): String = match.groupValues[12]
+operator fun MatchResult.Destructured.component13(): String = match.groupValues[13]
+
+object SdpGrammar {
+{% for type, rules in grammar.items() -%}
+{% for rule in rules -%}
+{% set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+    private val {{name.upper()}} = """{{rule.reg}}""".toRegex()
+    fun tryParse{{name.title()}}(string: String): Sdp{{name.title()}}? {
+        val match = {{name.upper()}}.matchEntire(string) ?: return null
+        val ({% for field in rule.fields %}{{field.name}}{{ ", " if not loop.last else "" }}{% endfor %}) = match.destructured
+        return Sdp{{name.title()}}(
+            {%- for field in rule.fields -%}
+            {%- if field.type == "Long" and field.optional -%}
+                toOptionalLong({{field.name}})
+            {%- elif field.type == "Long" -%}
+                {{field.name}}.toLong()
+            {%- elif field.type == "String" and field.optional -%}
+                toOptionalString({{field.name}})
+            {%- else -%}
+                {{field.name}}
+            {%- endif -%}
+            {{ ", " if not loop.last else "" }}
+            {%- endfor -%})
+    }
+    fun write{{name.title()}}(item: Sdp{{name.title()}}): String {
+        return "{{rule.format}}"
+    }
+{% endfor -%}
+{% endfor -%}
+}
+
+class SdpMedia {
+{%- for type, rules in grammar.items() %}
+{%- for rule in rules %}
+{%- set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+{%- if rule.push %}
+    var {{name}} = mutableListOf<Sdp{{name.title()}}>()
+{%- else %}
+    var {{name}}: Sdp{{name.title()}}? = null
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+
+    override fun equals(other: Any?)
+        = (other is SdpMedia)
+{%- for type, rules in grammar.items() %}
+{%- for rule in rules %}
+{%- set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+        && {{name}} == other.{{name}}
+{%- endfor %}
+{%- endfor %}
+}
+
+class SdpSession {
+{%- for type, rules in grammar.items() %}
+{%- for rule in rules %}
+{%- set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+{%- if rule.push %}
+    var {{name}} = mutableListOf<Sdp{{name.title()}}>()
+{%- else %}
+    var {{name}}: Sdp{{name.title()}}? = null
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+    val media = mutableListOf<SdpMedia>()
+
+    init {
+        version = SdpVersion(0)
+    }
+
+    fun parse(sdp: String) {
+        val lines = sdp.split("\r\n").filter { line -> line.isNotEmpty() }
+        if (lines.isEmpty()) {
+            throw IllegalArgumentException("Invalid empty SDP")
+        }
+        lines.forEach { line -> parseLine(line) }
+    }
+
+    fun write(): String {
+        val lines = mutableListOf<String>()
+
+{%- for type, rules in grammar.items() %}
+{%- for rule in rules %}
+{%- set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+{%- if rule.push %}
+        {{name}}.forEach { item -> lines.add("{{type}}=" + SdpGrammar.write{{name.title()}}(item))}
+{%- else %}
+        if ({{name}} != null) lines.add("{{type}}=" + SdpGrammar.write{{name.title()}}({{name}}!!))
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+        for (m in media) {
+            lines.add("m=" + SdpGrammar.writeMline(m.mline!!))
+{%- for type, rules in grammar.items() %}
+{%- for rule in rules %}
+{%- if type != 'm' %}
+{%- set name = rule.push if rule.push else rule.name %}
+{%- if rule.push %}
+            m.{{name}}.forEach { item -> lines.add("{{type}}=" + SdpGrammar.write{{name.title()}}(item))}
+{%- else %}
+            if (m.{{name}} != null) lines.add("{{type}}=" + SdpGrammar.write{{name.title()}}(m.{{name}}!!))
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+        }
+
+        return lines.joinToString("\r\n", postfix = "\r\n")
+    }
+
+    private fun parseLine(line: String) {
+        if (line.length < 2 || line[1] != '=') {
+            throw IllegalArgumentException("Invalid SDP line")
+        }
+        val type = line[0]
+        val value = line.substring(2)
+        var lastMedia = media.lastOrNull()
+        when (type) {
+{%- for type, rules in grammar.items() %}
+            '{{type}}' -> {
+{%- for rule in rules %}
+{%- set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+                val try{{name.title()}} = SdpGrammar.tryParse{{name.title()}}(value)
+                if (try{{name.title()}} != null) {
+{%- if type == 'm' %}
+                    lastMedia = SdpMedia()
+                    lastMedia.{{name}} = try{{name.title()}}
+                    media.add(lastMedia)
+{%- else %}
+{%- if rule.push %}
+                    if (lastMedia != null) lastMedia.{{name}}.add(try{{name.title()}}) else {{name}}.add(try{{name.title()}})
+{%- else %}
+                    if (lastMedia != null) lastMedia.{{name}} = try{{name.title()}} else {{name}} = try{{name.title()}}
+{%- endif %}
+{%- endif %}
+                return }
+{%- endfor %}
+            }
+{%- endfor %}
+        }
+    }
+
+    override fun equals(other: Any?)
+        = (other is SdpSession)
+        && media == other.media
+{%- for type, rules in grammar.items() %}
+{%- for rule in rules %}
+{%- set name = 'mline' if type == 'm' else (rule.push if rule.push else rule.name) %}
+        && {{name}} == other.{{name}}
+{%- endfor %}
+{%- endfor %}
+}
