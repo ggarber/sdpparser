@@ -4,7 +4,7 @@ Session Description Protocol (SDP) parser implemented in Kotlin.  Defines intern
 
 This is a Kotlin and type safe port of the [sdp-transform](https://github.com/clux/sdp-transform) javascript implementation.
 
-# Instalation
+# Installation
 
 Until published in maven central you can install it locally by running gradle `publishToMavenLocal` task.
 
@@ -13,7 +13,7 @@ Until published in maven central you can install it locally by running gradle `p
 ## Generating a Session Description
 
 ```
-import com.ggarber.sdpparser
+import io.github.ggarber.sdpparser
 
 val session = SdpSession()
 session.version = SdpVersion(0)
@@ -28,7 +28,7 @@ val str = session.write()
 ## Parsing a Session Description
 
 ```
-import com.ggarber.sdpparser
+import io.github.ggarber.sdpparser
 
 val session = SdpParser.parse(str)
 ```

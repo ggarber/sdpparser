@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
-package com.ggarber.sdpparser
+package io.github.ggarber.sdpparser
 
 import kotlin.test.*
 
