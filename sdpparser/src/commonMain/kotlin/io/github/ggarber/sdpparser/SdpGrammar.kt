@@ -1,6 +1,6 @@
 @file:Suppress("RemoveSingleExpressionStringTemplate", "SpellCheckingInspection")
 
-package com.ggarber.sdpparser
+package io.github.ggarber.sdpparser
 
 data class SdpVersion(val value: Long)
 data class SdpOrigin(val username: String, val sessionId: Long, val sessionVersion: Long, val netType: String, val ipVer: Long, val address: String)
