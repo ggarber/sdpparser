@@ -17,11 +17,6 @@ kotlin {
     jvm()
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.0")
-            }
-        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
