@@ -1,18 +1,22 @@
-# Introduction
+# SDPParser
 
-Session Description Protocol (SDP) parser implemented in Kotlin.  Defines internal grammar based on RFC4566 - SDP, RFC5245 - ICE, and many more.
+## Introduction
 
-This is a Kotlin and type safe port of the [sdp-transform](https://github.com/clux/sdp-transform) javascript implementation.
+Session Description Protocol (SDP) parser implemented in Kotlin. Defines internal grammar based on RFC4566 
+- SDP, RFC5245 - ICE, and many more.
 
-# Installation
+This is a Kotlin and type safe port of the [sdp-transform](https://github.com/clux/sdp-transform) 
+javascript implementation.
+
+## Installation
 
 Until published in maven central you can install it locally by running gradle `publishToMavenLocal` task.
 
-# Usage
+## Usage
 
-## Generating a Session Description
+### Generating a Session Description
 
-```
+```kotlin
 import io.github.ggarber.sdpparser
 
 val session = SdpSession()
@@ -25,9 +29,9 @@ session.media.add(media)
 val str = session.write()
 ```
 
-## Parsing a Session Description
+### Parsing a Session Description
 
-```
+```kotlin
 import io.github.ggarber.sdpparser
 
 val session = SdpParser.parse(str)
