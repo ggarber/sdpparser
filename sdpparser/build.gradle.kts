@@ -15,6 +15,20 @@ repositories {
 
 kotlin {
     jvm()
+    js {
+        useCommonJs()
+        browser {
+            compilations.all {
+                kotlinOptions {
+                    sourceMap = true
+                    sourceMapEmbedSources = "always"
+                }
+            }
+            testTask {
+                useMocha()
+            }
+        }
+    }
 
     sourceSets {
         val commonTest by getting {
@@ -23,6 +37,9 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
+
+        val jvmTest by getting
+        val jsTest by getting
     }
 }
 

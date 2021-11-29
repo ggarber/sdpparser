@@ -10,7 +10,7 @@ class SdpParserTest {
     }
 
     @Test fun testParseNormalSdp() {
-        val sdp = javaClass.getResource("/normal.sdp").readText()
+        val sdp = loadResource("/normal.sdp")
         val session = SdpParser.parse(sdp)
         assertEquals(0, session.version!!.value)
 
@@ -62,7 +62,7 @@ class SdpParserTest {
     @Test fun testComposesRefClkSessSdp() = testCompose("ts-refclk-sess")
 
     private fun testCompose(name: String) {
-        val sdp = javaClass.getResource("/${name}.sdp").readText()
+        val sdp = loadResource("/${name}.sdp")
         val session1 = SdpParser.parse(sdp)
         val session2 = SdpParser.parse(session1.write())
 
