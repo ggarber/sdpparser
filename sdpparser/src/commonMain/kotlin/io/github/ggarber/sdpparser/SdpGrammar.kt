@@ -261,7 +261,7 @@ object SdpGrammar {
         return "rtcp-fb:${item.payload} trr-int ${item.value}"
     }
 
-    private val RTCPFB = """rtcp-fb:(\*|\d*) ([\w-_]*)(?: ([\w-_]*))?""".toRegex()
+    private val RTCPFB = """rtcp-fb:(\*|\d*) ([\w_-]*)(?: ([\w_-]*))?""".toRegex()
     fun tryParseRtcpfb(string: String): SdpRtcpfb? {
         val match = RTCPFB.matchEntire(string) ?: return null
         val (payload, type, subtype) = match.destructured
